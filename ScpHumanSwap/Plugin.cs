@@ -13,7 +13,7 @@ public class Plugin : Plugin<Config>
     public override string Prefix => "ScpGiveaway";
     public override string Name => Prefix;
     public override string Author => "Banalny_Banan";
-    public override Version Version { get; } = new Version(1, 0, 0);
+    public override Version Version { get; } = new Version(0, 6, 0);
     public static Plugin Instance;
 
     public override void OnEnabled()
