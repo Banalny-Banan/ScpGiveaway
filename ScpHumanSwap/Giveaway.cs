@@ -29,7 +29,7 @@ public class Giveaway
         GiveawayCoroutine().RunCoroutine();
         foreach (var player in Player.List.Where(ply => !ply.IsScp))
         {
-            player.Broadcast(8, $"You can join the giveaway for <color=#b8d7a3>{ForRole}</color> by typing <color=#9cdcfe>.JoinGiveaway {ForRole}</color> in your console <color=#569cd6>[~]</color>");
+            player.Broadcast(8, $"You can join the giveaway for <color=#b8d7a3>{ForRole}</color> by typing <color=#9cdcfe>.JG{ForRole}</color> in your console <color=#569cd6>[~]</color>");
         }
         List.Add(this);
     }
@@ -103,19 +103,27 @@ public class Giveaway
 
     private static void SwapPlayers(Player scp, Player human)
     {
-        var scpInfo = (scp.Health, RoleType: scp.Role.Type, scp.Position);
+        float scpHealth = scp.Health;
+        var scpRoleType = scp.Role.Type;
+        var scpPosition = scp.Position;
 
         scp.Role.Set(human.Role.Type);
         scp.Position = human.Position;
         scp.Health = human.Health;
-        foreach (var item in human.Items)
-        {
-            item.ChangeItemOwner(human, scp);
-        }
 
-        human.Role.Set(scpInfo.RoleType);
-        human.Position = scpInfo.Position;
-        human.Health = scpInfo.Health;
+        Timing.CallDelayed(0.2f, () =>
+        {
+            foreach (var item in human.Items.ToList())
+            {
+                var pkp = human.DropItem(item);
+                scp.AddItem(pkp);
+                pkp.Destroy();
+            }
+
+            human.Role.Set(scpRoleType);
+            human.Position = scpPosition;
+            human.Health = scpHealth;
+        });
     }
 
     public static readonly List<Giveaway> List = new();

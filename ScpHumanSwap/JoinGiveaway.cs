@@ -46,12 +46,24 @@ public class JoinGiveaway : ICommand, IUsageProvider
             return false;
         }
 
-        //dont accept enum numbers, only names
-        
         if (!Enum.TryParse(arguments.At(0), true, out RoleTypeId roleType) || !Enum.IsDefined(typeof(RoleTypeId), roleType))
         {
-            response = $"<color=#dcdcdc>Invalid giveaway role \"<color=#ff3333>{arguments.At(0)}</color>\"</color>{ActiveGiveaways()}";
-            return false;
+            roleType = arguments.At(0) switch
+            {
+                "173" => RoleTypeId.Scp173,
+                "106" => RoleTypeId.Scp106,
+                "049" => RoleTypeId.Scp049,
+                "096" => RoleTypeId.Scp096,
+                "939" => RoleTypeId.Scp939,
+                "079" => RoleTypeId.Scp079,
+                "3114" => RoleTypeId.Scp3114,
+                _ => RoleTypeId.None,
+            };
+            if (roleType == RoleTypeId.None)
+            {
+                response = $"<color=#dcdcdc>Invalid giveaway role \"<color=#ff3333>{arguments.At(0)}</color>\"</color>{ActiveGiveaways()}";
+                return false;
+            }
         }
 
         if (Giveaway.List.FirstOrDefault(giv => giv.ForRole == roleType) is not Giveaway giveaway)
@@ -69,7 +81,7 @@ public class JoinGiveaway : ICommand, IUsageProvider
             response = $"<color=#dcdcdc>You have already joined the giveaway for <color=#b8d7a3>{roleType}</color>";
         }
         
-        response += $"There are [<color=#4ec9b0>{giveaway.Participants.Count}</color>] participants including you</color>";
+        response += $" There are [<color=#4ec9b0>{giveaway.Participants.Count}</color>] participants including you</color>";
         
         return true;
     }

@@ -12,7 +12,7 @@ public class StartGiveaway : ICommand, IUsageProvider
 
     public string Description { get; } = "Starts a giveaway for your scp role";
 
-    public string[] Aliases { get; } = { "human" };
+    public string[] Aliases { get; } = { "human", "sg" };
 
     public string[] Usage { get; } = { };
 
